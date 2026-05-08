@@ -1,0 +1,116 @@
+{
+  "name": "FoodieBot Chef's Special Readiness Evaluator",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "foodiebot-readiness",
+        "options": {}
+      },
+      "id": "node-1",
+      "name": "Webhook Trigger",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 1,
+      "position": [0, 300]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "http://localhost:3000/api/evaluate-readiness",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"student_name\": \"{{ $json.body.student_name }}\",\n  \"gate_project_scores\": \"{{ $json.body.gate_project_scores }}\",\n  \"attendance_percentage\": {{ $json.body.attendance_percentage }},\n  \"self_resolution_rate\": {{ $json.body.self_resolution_rate }},\n  \"peer_feedback\": \"{{ $json.body.peer_feedback }}\"\n}",
+        "options": {}
+      },
+      "id": "node-2",
+      "name": "Chef Readiness Agent",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [220, 300]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "number": [
+            {
+              "value1": "={{ $json.evaluation.readiness_tier }}",
+              "operation": "equal",
+              "value2": 3
+            }
+          ]
+        }
+      },
+      "id": "node-3",
+      "name": "Is Dish Featured Ready?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [440, 300]
+    },
+    {
+      "parameters": {
+        "chatId": "deployment-leads",
+        "text": "=⭐ CHEF'S SPECIAL ALERT!\n\n🍽️ Dish: {{ $node[\"Chef Readiness Agent\"].json.evaluation.dish_name }}\nChef: {{ $node[\"Chef Readiness Agent\"].json.evaluation.chef_name }}\n\nThis dish has achieved FEATURED READY status!\n\nStrengths:\n{{ $node[\"Chef Readiness Agent\"].json.evaluation.strengths }}\n\n🚀 Ready for Chef's Special promotion. Contact Head Chef immediately.",
+        "options": {}
+      },
+      "id": "node-4",
+      "name": "Notify Head Chef",
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.1,
+      "position": [660, 200]
+    },
+    {
+      "parameters": {
+        "chatId": "mentorship-team",
+        "text": "=🔄 DISH IMPROVEMENT REQUIRED\n\nDish: {{ $node[\"Chef Readiness Agent\"].json.evaluation.dish_name }}\nCurrent Tier: {{ $node[\"Chef Readiness Agent\"].json.evaluation.readiness_tier }}\n\nQuality Gaps:\n{{ $node[\"Chef Readiness Agent\"].json.evaluation.skills_to_strengthen }}\n\nAction Items for Kitchen Team:\n{{ $node[\"Chef Readiness Agent\"].json.evaluation.action_items }}",
+        "options": {}
+      },
+      "id": "node-5",
+      "name": "Notify Kitchen Team",
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.1,
+      "position": [660, 400]
+    }
+  ],
+  "connections": {
+    "Webhook Trigger": {
+      "main": [
+        [
+          {
+            "node": "Chef Readiness Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Chef Readiness Agent": {
+      "main": [
+        [
+          {
+            "node": "Is Dish Featured Ready?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Is Dish Featured Ready?": {
+      "main": [
+        [
+          {
+            "node": "Notify Head Chef",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Notify Kitchen Team",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  }
+}

@@ -1,0 +1,100 @@
+{
+  "name": "FoodieBot Scheduled Weekly Restaurant Performance Report",
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "cronExpression",
+              "expression": "0 18 * * 0"
+            }
+          ]
+        }
+      },
+      "id": "node-1",
+      "name": "Every Sunday Evening",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.1,
+      "position": [0, 300]
+    },
+    {
+      "parameters": {
+        "jsCode": "return [\n  {\n    json: {\n      student_name: \"Ember & Ash Bistro\",\n      week_number: \"Week of May 5\",\n      attendance: \"1,240 covers\",\n      assignment_scores: {\n        \"Margherita\": 4.8,\n        \"Grilled Branzino\": 4.5\n      },\n      doubt_history: \"Revenue up 6%, repeat guests +12%, Saturday peak hold times elevated\",\n      milestone_progress: \"Brunch pilot launched, patio fully staffed\"\n    }\n  },\n  {\n    json: {\n      student_name: \"Harbor Table\",\n      week_number: \"Week of May 5\",\n      attendance: \"980 covers\",\n      assignment_scores: {\n        \"Fish tacos\": 4.6,\n        \"Chocolate torte\": 4.9\n      },\n      doubt_history: \"Strong dessert attach rate; wait times flagged on Friday\",\n      milestone_progress: \"New wine list rollout\"\n    }\n  }\n];"
+      },
+      "id": "node-2",
+      "name": "Fetch Restaurant Metrics",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [220, 300]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "http://localhost:3000/api/generate-report",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"student_name\": \"{{ $json.student_name }}\",\n  \"week_number\": \"{{ $json.week_number }}\",\n  \"attendance\": \"{{ $json.attendance }}\",\n  \"assignment_scores\": {{ JSON.stringify($json.assignment_scores) }},\n  \"doubt_history\": \"{{ $json.doubt_history }}\",\n  \"milestone_progress\": \"{{ $json.milestone_progress }}\"\n}",
+        "options": {}
+      },
+      "id": "node-3",
+      "name": "Restaurant Analytics AI Report",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [440, 300]
+    },
+    {
+      "parameters": {
+        "values": {
+          "string": [
+            {
+              "name": "report_message",
+              "value": "=📊 Weekly Performance Report for {{ $json.report.student_name }}\n\n⭐ Performance Score: {{ $json.report.performance_score || $json.report.progress_score }}/100\n\n🍽️ Top Dishes This Week:\n{{ $json.report.top_dishes }}\n\n📈 Recommendations:\n{{ $json.report.recommendations }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "node-4",
+      "name": "Prepare Restaurant Message",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.2,
+      "position": [660, 300]
+    }
+  ],
+  "connections": {
+    "Every Sunday Evening": {
+      "main": [
+        [
+          {
+            "node": "Fetch Restaurant Metrics",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Fetch Restaurant Metrics": {
+      "main": [
+        [
+          {
+            "node": "Restaurant Analytics AI Report",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Restaurant Analytics AI Report": {
+      "main": [
+        [
+          {
+            "node": "Prepare Restaurant Message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  }
+}

@@ -1,0 +1,172 @@
+{
+  "name": "FoodieBot Weekly Restaurant Performance Report",
+  "nodes": [
+    {
+      "parameters": {},
+      "id": "a1b2c3d4",
+      "name": "When clicking \"Execute Workflow\"",
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [0, 300]
+    },
+    {
+      "parameters": {
+        "jsCode": "return {\n  submission_text: \"Guest ordered grilled sea bass, seasonal veg, wine pairing. Loved acidity balance; dessert pacing slightly slow.\",\n  week: \"Jordan Lee\",\n  module: \"Sea bass · tasting garnish\",\n  assignment_type: \"Dine-in\"\n};"
+      },
+      "id": "e5f6g7h8",
+      "name": "Process Restaurant Data",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [200, 300]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "http://localhost:3000/api/evaluate",
+        "sendBody": true,
+        "contentType": "multipart-form-data",
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "submission_text",
+              "value": "={{ $json.submission_text }}"
+            },
+            {
+              "name": "week",
+              "value": "={{ $json.week }}"
+            },
+            {
+              "name": "module",
+              "value": "={{ $json.module }}"
+            },
+            {
+              "name": "assignment_type",
+              "value": "={{ $json.assignment_type }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "i9j0k1l2",
+      "name": "Call Menu Advisor API",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [420, 300]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "string": [
+            {
+              "value1": "={{ $json.evaluation.recommendation }}",
+              "operation": "equal",
+              "value2": "Pass"
+            }
+          ]
+        }
+      },
+      "id": "m3n4o5p6",
+      "name": "Experience meets Pass?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [640, 300]
+    },
+    {
+      "parameters": {
+        "values": {
+          "string": [
+            {
+              "name": "subject",
+              "value": "🍽️ Dining experience — excellent"
+            },
+            {
+              "name": "message",
+              "value": "=📊 Menu Advisor · Experience score {{ $node[\"Call Menu Advisor API\"].json.evaluation.experience_score || $node[\"Call Menu Advisor API\"].json.evaluation.overall_score }}/10\n\nGuest feedback:\n{{ $node[\"Call Menu Advisor API\"].json.evaluation.feedback_message }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "q7r8s9t0",
+      "name": "Notify Front-of-house Success",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 2,
+      "position": [860, 200]
+    },
+    {
+      "parameters": {
+        "values": {
+          "string": [
+            {
+              "name": "subject",
+              "value": "🔄 Quality refinements suggested"
+            },
+            {
+              "name": "message",
+              "value": "=The dining experience scored {{ $node[\"Call Menu Advisor API\"].json.evaluation.experience_score || $node[\"Call Menu Advisor API\"].json.evaluation.overall_score }}/10.\n\nRecipe / service-level feedback:\n{{ $node[\"Call Menu Advisor API\"].json.evaluation.feedback_message }}\n\nPlease review quality gaps and coach the line before the next service."
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "u1v2w3x4",
+      "name": "Notify Kitchen Improvement Team",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 2,
+      "position": [860, 400]
+    }
+  ],
+  "connections": {
+    "When clicking \"Execute Workflow\"": {
+      "main": [
+        [
+          {
+            "node": "Process Restaurant Data",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Process Restaurant Data": {
+      "main": [
+        [
+          {
+            "node": "Call Menu Advisor API",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Call Menu Advisor API": {
+      "main": [
+        [
+          {
+            "node": "Experience meets Pass?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Experience meets Pass?": {
+      "main": [
+        [
+          {
+            "node": "Notify Front-of-house Success",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Notify Kitchen Improvement Team",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  }
+}
