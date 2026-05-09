@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>FoodieBot – AI Restaurant Intelligence</title>
+  <meta name="description" content="FoodieBot Menu Advisor — AI-powered dining experience evaluation, Michelin-star level feedback, and personalized dish recommendations for restaurants and diners." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+  <!-- Animated background -->
+  <div class="bg-grid"></div>
+  <div class="bg-orbs">
+    <div class="orb orb-1"></div>
+    <div class="orb orb-2"></div>
+    <div class="orb orb-3"></div>
+  </div>
+
+  <!-- Header -->
+  <header class="header">
+    <div class="header-inner">
+      <div class="logo">
+        <div class="logo-icon">
+          <svg viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <rect width="32" height="32" rx="10" fill="url(#logoGrad)"/>
+            <path d="M9 16l5 5 9-9" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+            <defs>
+              <linearGradient id="logoGrad" x1="0" y1="0" x2="32" y2="32" gradientUnits="userSpaceOnUse">
+                <stop stop-color="#FF6B35"/>
+                <stop offset="1" stop-color="#F7C59F"/>
+              </linearGradient>
+            </defs>
+          </svg>
+        </div>
+        <div>
+          <div class="logo-title">FoodieBot</div>
+          <div class="logo-sub">Menu Advisor Agent</div>
+        </div>
+      </div>
+      <div class="header-badge">
+        <span class="pulse-dot"></span>
+        Gemini AI Powered
+      </div>
+    </div>
+  </header>
+
+  <!-- Hero -->
+  <section class="hero">
+    <div class="hero-tag">AI-Powered Culinary Intelligence System</div>
+    <h1 class="hero-title">
+      FoodieBot 🍽️
+    </h1>
+    <p class="hero-desc">
+      Share order details and dining feedback — get experience scores, dish-level insights,<br/>
+      three tailored recommendations, and Pass / Revise / Redo guidance — in seconds.
+    </p>
+    <div class="hero-stats">
+      <div class="stat"><span class="stat-num">5</span><span class="stat-label">Criteria</span></div>
+      <div class="stat-divider"></div>
+      <div class="stat"><span class="stat-num">10</span><span class="stat-label">Max Score</span></div>
+      <div class="stat-divider"></div>
+      <div class="stat"><span class="stat-num">&lt;10s</span><span class="stat-label">Feedback Time</span></div>
+    </div>
+  </section>
+
+  <!-- Main content -->
+  <main class="main">
+
+    <!-- Submission Form Card -->
+    <section class="card form-card" id="submission-section">
+      <div class="card-header">
+        <div class="card-icon">📝</div>
+        <div>
+          <h2 class="card-title">Dining Experience &amp; Order</h2>
+          <p class="card-subtitle">Tell us what you ordered and how the meal and service felt — optional file attach</p>
+        </div>
+      </div>
+
+      <form id="eval-form" novalidate>
+
+        <!-- Context Row -->
+        <div class="form-row">
+          <div class="form-group">
+            <label for="week" class="form-label">Customer Name</label>
+            <input type="text" id="week" name="week" class="form-input" placeholder="e.g. Jordan Lee" />
+          </div>
+          <div class="form-group">
+            <label for="module" class="form-label">Dish / Order Name</label>
+            <input type="text" id="module" name="module" class="form-input" placeholder="e.g. Truffle risotto, Chef's tasting menu" />
+          </div>
+          <div class="form-group">
+            <label for="assignment_type" class="form-label">Order Type</label>
+            <select id="assignment_type" name="assignment_type" class="form-input form-select">
+              <option value="Dine-in">Dine-in</option>
+              <option value="Takeout">Takeout</option>
+              <option value="Delivery">Delivery</option>
+              <option value="Tasting menu">Tasting menu</option>
+              <option value="Private event">Private event</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- Rubric -->
+        <div class="form-group">
+          <label for="rubric" class="form-label">Dietary preferences / special criteria <span class="label-optional">(optional)</span></label>
+          <textarea id="rubric" name="rubric" class="form-input form-textarea" rows="3"
+            placeholder="e.g. Gluten-free, nut allergy, low sodium, vegan — or what mattered most for this visit"></textarea>
+        </div>
+
+        <!-- Upload Zone -->
+        <div class="form-group">
+          <label class="form-label">Receipt / notes file</label>
+          <div class="upload-zone" id="upload-zone">
+            <input type="file" id="submission_file" name="submission_file" class="file-input" accept=".json,.js,.py,.txt,.yaml,.yml,.ts" />
+            <div class="upload-icon">📁</div>
+            <div class="upload-text">Drop file here or <span class="upload-link">browse</span></div>
+            <div class="upload-hint">Supports: .json, .js, .py, .yaml, .txt — max 10MB</div>
+            <div class="upload-filename" id="upload-filename"></div>
+          </div>
+        </div>
+
+        <!-- OR divider -->
+        <div class="or-divider"><span>or describe your order below</span></div>
+
+        <!-- Code paste -->
+        <div class="form-group">
+          <label for="submission_text" class="form-label">Order details &amp; dining experience</label>
+          <div class="code-editor-wrapper">
+            <div class="code-editor-bar">
+              <span class="code-dot red"></span>
+              <span class="code-dot yellow"></span>
+              <span class="code-dot green"></span>
+              <span class="code-lang" id="code-lang-label">plaintext</span>
+            </div>
+            <textarea id="submission_text" name="submission_text" class="form-input code-textarea" rows="14"
+              placeholder="Describe what was ordered, how it tasted, presentation quality, service experience...
+
+Example: Started with burrata; mains were duck breast and risotto; dessert soufflé. Service attentive; pacing slightly slow on mains."></textarea>
+          </div>
+        </div>
+
+        <!-- Submit -->
+        <button type="submit" class="btn-submit" id="submit-btn">
+          <span class="btn-text">
+            <svg class="btn-icon" viewBox="0 0 20 20" fill="none">
+              <path d="M10 2L18 10L10 18" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+              <path d="M2 10H18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+            </svg>
+            🤖 Evaluate Dining Experience
+          </span>
+          <span class="btn-loading" style="display:none">
+            <span class="spinner"></span>
+            Evaluating dining experience...
+          </span>
+        </button>
+
+      </form>
+    </section>
+
+    <!-- Results Section (hidden until evaluation) -->
+    <section class="results-section" id="results-section" style="display:none">
+
+      <!-- Score Banner -->
+      <div class="score-banner" id="score-banner">
+        <div class="score-main">
+          <div class="score-circle" id="score-circle">
+            <svg class="score-ring" viewBox="0 0 120 120">
+              <circle class="ring-bg" cx="60" cy="60" r="52" />
+              <circle class="ring-fill" id="ring-fill" cx="60" cy="60" r="52" />
+            </svg>
+            <div class="score-value" id="score-value">—</div>
+            <div class="score-label">/ 10</div>
+          </div>
+          <div class="score-info">
+            <div class="recommendation-badge" id="recommendation-badge">—</div>
+            <div class="score-summary" id="score-summary">Evaluating...</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Feedback Message -->
+      <div class="feedback-message-card" id="feedback-message-card">
+        <div class="feedback-message-icon">💬</div>
+        <blockquote class="feedback-message-text" id="feedback-message-text"></blockquote>
+      </div>
+
+      <!-- Criteria Cards -->
+      <div class="criteria-header">
+        <h2 class="section-title">FoodieBot Menu Advisor Report</h2>
+        <p class="section-subtitle">Scores per dining criterion — recipe &amp; service-level feedback</p>
+      </div>
+      <div class="criteria-grid" id="criteria-grid">
+        <!-- Injected by JS -->
+      </div>
+
+      <!-- Actions -->
+      <div class="result-actions">
+        <button class="btn-secondary" id="btn-copy-feedback">
+          📋 Copy Feedback
+        </button>
+        <button class="btn-secondary" id="btn-new-eval">
+          🔄 New Evaluation
+        </button>
+      </div>
+    </section>
+
+    <!-- Error section -->
+    <div class="error-banner" id="error-banner" style="display:none">
+      <span class="error-icon">⚠️</span>
+      <span id="error-msg">Something went wrong.</span>
+    </div>
+
+  </main>
+
+  <!-- Rubric Reference Panel -->
+  <section class="rubric-panel">
+    <div class="rubric-panel-inner">
+      <h2 class="rubric-title">📊 Dining excellence rubric</h2>
+      <p class="rubric-desc">Every experience is scored across these five dimensions — Michelin-star level rigor:</p>
+      <div class="rubric-grid">
+        <div class="rubric-item">
+          <div class="rubric-item-icon">🛡️</div>
+          <div class="rubric-item-name">Taste &amp; seasoning</div>
+          <div class="rubric-item-desc">Balance, depth of flavor, temperature, consistency</div>
+        </div>
+        <div class="rubric-item">
+          <div class="rubric-item-icon">🔍</div>
+          <div class="rubric-item-name">Presentation</div>
+          <div class="rubric-item-desc">Plating, garnish, visual appeal, table setting</div>
+        </div>
+        <div class="rubric-item">
+          <div class="rubric-item-icon">✨</div>
+          <div class="rubric-item-name">Value</div>
+          <div class="rubric-item-desc">Portion, price-to-quality, beverage pairing fit</div>
+        </div>
+        <div class="rubric-item">
+          <div class="rubric-item-icon">🏗️</div>
+          <div class="rubric-item-name">Service</div>
+          <div class="rubric-item-desc">Timing, hospitality, knowledge, recovery</div>
+        </div>
+        <div class="rubric-item">
+          <div class="rubric-item-icon">⚡</div>
+          <div class="rubric-item-name">Overall experience</div>
+          <div class="rubric-item-desc">Ambience, cohesion of the meal, memorable moments</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="footer-inner">
+      <span>🍽️ FoodieBot · Menu Advisor · Culinary intelligence ecosystem</span>
+      <span>Powered by Gemini AI</span>
+    </div>
+  </footer>
+
+  <script src="app.js"></script>
+</body>
+</html>

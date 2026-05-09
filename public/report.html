@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Weekly Restaurant Performance Report</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="bg-grid"></div>
+    <div class="bg-orbs">
+        <div class="orb orb-1"></div>
+        <div class="orb orb-2"></div>
+        <div class="orb orb-3"></div>
+    </div>
+
+    <header class="header">
+        <div class="header-inner">
+            <div class="logo">
+                <div class="logo-icon">📈</div>
+                <div>
+                    <div class="logo-title">FoodieBot</div>
+                    <div class="logo-sub">Restaurant Analytics Agent</div>
+                </div>
+            </div>
+            <div class="header-badge">
+                <div class="pulse-dot"></div>
+                Weekly performance intelligence
+            </div>
+        </div>
+    </header>
+
+    <div class="hero">
+        <div class="hero-tag">Weekly Restaurant Performance Intelligence</div>
+        <h1 class="hero-title">Restaurant Analytics Agent 📊</h1>
+        <p class="hero-desc">Turn covers, revenue signals, and guest feedback into your Weekly Restaurant Performance Report.</p>
+    </div>
+
+    <main class="main">
+        <section class="card">
+            <div class="card-header">
+                <div class="card-icon">📊</div>
+                <div>
+                    <h2 class="card-title">Restaurant performance input</h2>
+                    <p class="card-subtitle">Paste weekly operational data to generate the intelligence brief</p>
+                </div>
+            </div>
+
+            <form id="report-form">
+                <div class="form-group">
+                    <label class="form-label" for="student_name">Restaurant Name</label>
+                    <input type="text" id="student_name" class="form-input" placeholder="e.g. Ember &amp; Ash Bistro" required>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label" for="week_number">Reporting period</label>
+                        <input type="text" id="week_number" class="form-input" placeholder="e.g. Week of May 5">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" for="attendance">Covers / traffic</label>
+                        <input type="text" id="attendance" class="form-input" placeholder="e.g. 1,240 covers">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" for="milestone_progress">Ops milestones</label>
+                        <input type="text" id="milestone_progress" class="form-input" placeholder="e.g. New brunch launch, patio open">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" for="assignment_scores">Dish &amp; station scores <span class="label-optional">(JSON or text)</span></label>
+                    <textarea id="assignment_scores" class="form-input form-textarea" placeholder='e.g. {"Margherita": 4.8, "Grilled Branzino": 4.5}' rows="3"></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" for="doubt_history">Weekly Performance Data</label>
+                    <textarea id="doubt_history" class="form-input form-textarea" placeholder="Paste weekly data: total orders, revenue, top-ordered dishes, customer ratings, feedback summaries, repeat customer count, new customers, peak hours..." rows="6"></textarea>
+                </div>
+
+                <button type="submit" id="generate-btn" class="btn-submit">
+                    <span class="btn-text">📊 Generate Performance Report</span>
+                    <span class="btn-icon">🚀</span>
+                </button>
+            </form>
+
+            <div id="loading" class="hidden" style="margin-top: 2rem; text-align: center;">
+                <div class="spinner" style="margin: 0 auto 1rem;"></div>
+                <p style="color: var(--text-muted);">Generating restaurant report...</p>
+            </div>
+        </section>
+
+        <section id="results" class="results-section hidden">
+            <div class="criteria-header" style="text-align: center; margin-bottom: 1.5rem;">
+                <h2 class="section-title">Weekly Restaurant Intelligence Report</h2>
+                <p class="section-subtitle">Restaurant Analytics Agent output · performance score &amp; action plan</p>
+            </div>
+            <div class="score-banner">
+                <div class="score-main">
+                    <div class="score-circle">
+                        <svg class="score-ring">
+                            <circle class="ring-bg" cx="60" cy="60" r="52"></circle>
+                            <circle id="score-ring-fill" class="ring-fill" cx="60" cy="60" r="52"></circle>
+                        </svg>
+                        <div class="score-value" id="res-score">0</div>
+                        <div class="score-label">SCORE</div>
+                    </div>
+                    <div class="score-info">
+                        <h2 class="hero-title" style="font-size: 2rem; text-align: left; margin-bottom: 0.5rem;" id="res-student-name">Restaurant Name</h2>
+                        <p class="score-summary" id="res-summary"></p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="feedback-message-card">
+                <div class="feedback-message-icon">✉️</div>
+                <div class="feedback-message-text" id="res-encouragement"></div>
+            </div>
+
+            <div class="criteria-grid">
+                <div class="criterion-card">
+                    <div class="criterion-top">
+                        <div class="criterion-name">🎯 Priorities for next week</div>
+                    </div>
+                    <div class="feedback-list">
+                        <ul class="feedback-items" id="res-focus-list"></ul>
+                    </div>
+                </div>
+
+                <div class="criterion-card">
+                    <div class="criterion-top">
+                        <div class="criterion-name">📝 Weekly Restaurant Intelligence snippet</div>
+                    </div>
+                    <div class="code-editor-wrapper" style="margin-top: 1rem;">
+                        <div class="code-editor-bar">
+                            <div class="code-dot red"></div>
+                            <div class="code-dot yellow"></div>
+                            <div class="code-dot green"></div>
+                            <div class="code-lang">PERFORMANCE_REPORT_SNIPPET</div>
+                        </div>
+                        <div class="code-textarea" id="res-snippet" style="padding: 1rem; font-size: 0.9rem;"></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="result-actions">
+                <button onclick="window.print()" class="btn-secondary">Print Report 🖨️</button>
+                <button onclick="location.reload()" class="btn-secondary">New Generation 🔄</button>
+            </div>
+        </section>
+    </main>
+
+    <footer class="footer">
+        <div class="footer-inner">
+            <div>© 2026 FoodieBot · Weekly Restaurant Performance Report</div>
+            <div>Restaurant Analytics · Culinary intelligence ecosystem</div>
+        </div>
+    </footer>
+
+    <script src="report-app.js"></script>
+</body>
+</html>

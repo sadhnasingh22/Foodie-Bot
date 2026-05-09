@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chef's Special Readiness Evaluator</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="bg-grid"></div>
+    <div class="bg-orbs">
+        <div class="orb orb-1"></div>
+        <div class="orb orb-2"></div>
+        <div class="orb orb-3"></div>
+    </div>
+
+    <header class="header">
+        <div class="header-inner">
+            <div class="logo">
+                <div class="logo-icon">🚀</div>
+                <div>
+                    <div class="logo-title">FoodieBot</div>
+                    <div class="logo-sub">Chef Readiness Agent</div>
+                </div>
+            </div>
+            <div class="header-badge">
+                <div class="pulse-dot"></div>
+                Chef Readiness Online
+            </div>
+        </div>
+    </header>
+
+    <div class="hero">
+        <div class="hero-tag">Menu Feature Readiness</div>
+        <h1 class="hero-title">Chef Readiness Agent 👨‍🍳</h1>
+        <p class="hero-desc">Evaluate if a dish is ready for Chef's Special promotion — featured menu intelligence.</p>
+    </div>
+
+    <main class="main">
+        <section class="card">
+            <div class="card-header">
+                <div class="card-icon">🎯</div>
+                <div>
+                    <h2 class="card-title">Dish performance signals</h2>
+                    <p class="card-subtitle">Consistency, ratings, reviews — is this dish ready to be a Chef's Special?</p>
+                </div>
+            </div>
+
+            <form id="readiness-form">
+                <div class="form-group">
+                    <label class="form-label" for="student_name">Chef / Staff Name</label>
+                    <input type="text" id="student_name" class="form-input" placeholder="e.g. Chef Anita Rao" required>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label" for="gate_project_scores">Dish Name</label>
+                        <input type="text" id="gate_project_scores" class="form-input" placeholder="e.g. Smoked duck breast, citrus glaze" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" for="attendance_percentage">Avg customer rating (1–10)</label>
+                        <input type="number" id="attendance_percentage" class="form-input" placeholder="e.g. 8" min="0" max="10" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" for="self_resolution_rate">Positive reviews count</label>
+                        <input type="number" id="self_resolution_rate" class="form-input" placeholder="e.g. 62" min="0" required>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" for="peer_feedback">Dish Performance Data</label>
+                    <textarea id="peer_feedback" class="form-input form-textarea" placeholder="Enter dish details: consistency score, customer rating average, number of reviews, presentation score, prep time, profit margin, any customer complaints..." rows="6"></textarea>
+                </div>
+
+                <button type="submit" id="evaluate-btn" class="btn-submit">
+                    <span class="btn-text">🍽️ Evaluate Feature Readiness</span>
+                    <span class="btn-icon">⚡</span>
+                </button>
+            </form>
+
+            <div id="loading" class="hidden" style="margin-top: 2rem; text-align: center;">
+                <div class="spinner" style="margin: 0 auto 1rem;"></div>
+                <p style="color: var(--text-muted);">Chef Readiness Agent is analyzing dish metrics...</p>
+            </div>
+        </section>
+
+        <section id="results" class="results-section hidden" style="margin-top: 2rem;">
+            <div class="score-banner" id="tier-banner">
+                <div class="score-main">
+                    <div class="score-circle">
+                        <div class="score-value" id="res-tier-badge">?</div>
+                        <div class="score-label">TIER</div>
+                    </div>
+                    <div class="score-info">
+                        <h2 class="score-title" id="res-tier">Feature tier</h2>
+                        <p class="score-desc" id="res-tier-desc">Chef's Special readiness</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="feedback-lists" style="margin-top: 1.5rem;">
+                <div class="criterion-card">
+                    <div class="criterion-top">
+                        <h3 class="criterion-name">Recommendation</h3>
+                    </div>
+                    <div class="criterion-details">
+                        <div style="margin-bottom: 1rem;">
+                            <div style="font-size: 0.75rem; text-transform: uppercase; color: var(--text-muted); font-weight: 600;">Promotion status</div>
+                            <div id="res-project" style="color: var(--text-main); font-weight: 700; font-size: 1.1rem;">Pending</div>
+                        </div>
+                        <div>
+                            <div style="font-size: 0.75rem; text-transform: uppercase; color: var(--text-muted); font-weight: 600;">Head Chef / Kitchen timeline</div>
+                            <div id="res-mentor" style="color: var(--text-main); font-weight: 700; font-size: 1.1rem;">Pending</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="criterion-card">
+                    <div class="criterion-top">
+                        <h3 class="criterion-name">Quality gaps</h3>
+                    </div>
+                    <ul id="res-skills-list" class="feedback-items"></ul>
+                </div>
+            </div>
+
+            <div class="card" style="margin-top: 1.5rem;">
+                <div class="card-header">
+                    <h3 class="card-title">Chef notes &amp; summary</h3>
+                </div>
+                <p id="res-report" class="feedback-text" style="color: var(--text-main); font-size: 1.1rem; line-height: 1.6;"></p>
+                
+                <div class="code-editor-wrapper" style="margin-top: 2rem;">
+                    <div class="code-editor-bar">
+                        <div class="code-dot red"></div>
+                        <div class="code-dot yellow"></div>
+                        <div class="code-dot green"></div>
+                        <div class="code-lang">FEATURE_READINESS_REPORT</div>
+                    </div>
+                    <div class="code-textarea" id="res-full-report"></div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="footer" style="text-align: center; padding: 4rem 2rem; border-top: 1px solid var(--border); margin-top: 4rem;">
+        <p style="color: var(--text-muted); font-size: 0.9rem;">© 2026 FoodieBot · Menu launch &amp; Chef's Special readiness for your culinary intelligence ecosystem.</p>
+    </footer>
+
+    <script src="readiness-app.js"></script>
+</body>
+</html>
