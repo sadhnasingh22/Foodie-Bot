@@ -36,5 +36,19 @@ Eliminate the "quality bottleneck" in restaurant management. Specialized AI agen
 - UI: `public/` — glassmorphic interfaces for customers and restaurant managers
 - Styles: `public/style.css` — unified professional design system
 
+## 📸 Screenshots
+
+### Main Dashboard – Submit Dining Experience
+![FoodieBot UI Form](assets/screenshot-ui-form.png)
+
+### AI Evaluation Result
+![FoodieBot AI Result](assets/screenshot-ai-result.png)
+
+### n8n Report Workflow 
+![n8n Report Workflow](assets/screenshot-n8n-report-workflow.png)
+
+### n8n Readiness Workflow
+![n8n Readiness Output](assets/screenshot-n8n-readiness-workflow.png)
+
 ## 🌍 Impact
 FoodieBot democratizes Michelin-star level quality evaluation for every restaurant — providing instant expert feedback on dishes, accelerating menu innovation and customer satisfaction.
